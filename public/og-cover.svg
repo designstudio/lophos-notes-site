@@ -1,0 +1,27 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="32" fill="#F2EEE8"/>
+  <rect x="66" y="70" width="1068" height="490" rx="28" fill="#FCFBF9"/>
+  <rect x="108" y="114" width="286" height="402" rx="22" fill="#EFEAE2"/>
+  <rect x="428" y="134" width="420" height="38" rx="19" fill="#27272A" fill-opacity="0.08"/>
+  <rect x="428" y="192" width="588" height="26" rx="13" fill="#27272A" fill-opacity="0.08"/>
+  <rect x="428" y="234" width="548" height="26" rx="13" fill="#27272A" fill-opacity="0.06"/>
+  <rect x="428" y="276" width="612" height="26" rx="13" fill="#27272A" fill-opacity="0.06"/>
+  <rect x="428" y="338" width="210" height="52" rx="26" fill="#3F3F46"/>
+  <rect x="428" y="414" width="506" height="18" rx="9" fill="#27272A" fill-opacity="0.08"/>
+  <rect x="428" y="446" width="466" height="18" rx="9" fill="#27272A" fill-opacity="0.06"/>
+  <path d="M140 180H360" stroke="#3F3F46" stroke-width="18" stroke-linecap="round"/>
+  <path d="M140 226H330" stroke="#3F3F46" stroke-opacity="0.26" stroke-width="14" stroke-linecap="round"/>
+  <path d="M140 264H304" stroke="#3F3F46" stroke-opacity="0.26" stroke-width="14" stroke-linecap="round"/>
+  <path d="M140 322H334" stroke="#3F3F46" stroke-opacity="0.2" stroke-width="12" stroke-linecap="round"/>
+  <path d="M140 356H290" stroke="#3F3F46" stroke-opacity="0.2" stroke-width="12" stroke-linecap="round"/>
+  <path d="M140 390H314" stroke="#3F3F46" stroke-opacity="0.2" stroke-width="12" stroke-linecap="round"/>
+  <text x="430" y="154" fill="#171717" font-family="Outfit, Segoe UI, sans-serif" font-size="50" font-weight="700">
+    Lophos Notes
+  </text>
+  <text x="430" y="208" fill="#3F3F46" font-family="Outfit, Segoe UI, sans-serif" font-size="28" font-weight="500">
+    Local-first notes for calm writing and clear thinking.
+  </text>
+  <text x="462" y="372" fill="#FAFAF9" font-family="Outfit, Segoe UI, sans-serif" font-size="24" font-weight="700">
+    Windows beta
+  </text>
+</svg>

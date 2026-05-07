@@ -1,0 +1,19 @@
+# Lophos Notes
+
+> Local-first notes for calm writing, private drafts, and clear thinking on Windows.
+
+## Product summary
+
+Lophos Notes is a Windows-focused notes application built around local ownership,
+clarity, and a quieter writing flow. The website describes the product, links to
+beta access, and provides terms and changelog pages.
+
+## Key URLs
+
+- Home: http://localhost:5173/
+- Changelog: http://localhost:5173/changelog/
+- Terms and policies: http://localhost:5173/terms/
+
+## Contact
+
+- Beta access and product questions: hello@mail.lophos.space
