@@ -2,6 +2,9 @@
   color-scheme: light;
   font-family: "Outfit", "Segoe UI", sans-serif;
   color: #0f0f0f;
+  --code-surface: #818b981f;
+  --code-inline-text: #2f2f2f;
+  --code-block-text: #222222;
 }
 
 * {
@@ -351,6 +354,50 @@ img {
 
 .release-note-body li::marker {
   color: #d1d5db;
+}
+
+.release-note-body code {
+  display: inline-block;
+  padding: 0.16rem 0.45rem;
+  border-radius: 0.5rem;
+  background: var(--code-surface);
+  color: var(--code-inline-text);
+  font: 400 0.88em/1.1 "SFMono-Regular", "Cascadia Code", "Consolas", "Liberation Mono", monospace;
+  letter-spacing: -0.01em;
+}
+
+.code-block {
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--code-surface);
+}
+
+.code-block-label {
+  padding: 0.72rem 1rem 0.68rem;
+  background: var(--code-surface);
+  color: rgba(63, 63, 70, 0.72);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: 1rem 1.1rem 1.15rem;
+  overflow-x: auto;
+}
+
+.code-block pre code {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--code-block-text);
+  font: 500 0.92rem/1.72 "SFMono-Regular", "Cascadia Code", "Consolas", "Liberation Mono", monospace;
+  white-space: pre;
 }
 
 .release-notes-footer {

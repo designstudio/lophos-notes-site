@@ -72,6 +72,18 @@ function normalizeInline(text) {
   return text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/`([^`]+)`/g, "$1").trim();
 }
 
+function createCodeBlockMarkup(code, language = "") {
+  const normalizedLanguage = language.trim().toLowerCase();
+  const languageLabel = normalizedLanguage ? `<div class="code-block-label">${escapeHtml(normalizedLanguage)}</div>` : "";
+
+  return `
+    <div class="code-block">
+      ${languageLabel}
+      <pre><code>${escapeHtml(code)}</code></pre>
+    </div>
+  `;
+}
+
 function parseChangelog(markdown) {
   const lines = markdown.split(/\r?\n/);
   const parsed = {
@@ -82,14 +94,44 @@ function parseChangelog(markdown) {
   let currentRelease = null;
   let currentSection = null;
 
+  const getTargetContent = () => {
+    if (currentSection) return currentSection.content;
+    if (currentRelease) return currentRelease.content;
+    return null;
+  };
+
+  const appendParagraph = (text) => {
+    const target = getTargetContent();
+    if (!target) return;
+    target.push({ type: "paragraph", value: renderInlineMarkdown(text) });
+  };
+
+  const appendBullet = (text) => {
+    const target = getTargetContent();
+    if (!target) return;
+
+    const lastItem = target[target.length - 1];
+    if (lastItem?.type === "bullets") {
+      lastItem.items.push(renderInlineMarkdown(text));
+      return;
+    }
+
+    target.push({ type: "bullets", items: [renderInlineMarkdown(text)] });
+  };
+
+  const appendCodeBlock = (code, language = "") => {
+    const target = getTargetContent();
+    if (!target) return;
+    target.push({ type: "code", value: code, language });
+  };
+
   const ensureSection = (title = "") => {
     if (!currentRelease) return null;
 
     if (!currentSection || currentSection.title !== title) {
       currentSection = {
         title,
-        paragraphs: [],
-        bullets: [],
+        content: [],
       };
       currentRelease.sections.push(currentSection);
     }
@@ -97,7 +139,8 @@ function parseChangelog(markdown) {
     return currentSection;
   };
 
-  for (const rawLine of lines) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const rawLine = lines[index];
     const line = rawLine.trim();
     if (!line) continue;
 
@@ -110,8 +153,7 @@ function parseChangelog(markdown) {
       currentRelease = {
         date: normalizeInline(line.slice(3)),
         title: "",
-        paragraphs: [],
-        bullets: [],
+        content: [],
         sections: [],
       };
       parsed.releases.push(currentRelease);
@@ -126,14 +168,22 @@ function parseChangelog(markdown) {
       continue;
     }
 
-    if (line.startsWith("- ") || line.startsWith("* ")) {
-      const value = renderInlineMarkdown(line.slice(2).trim());
+    if (line.startsWith("```")) {
+      const language = line.slice(3).trim();
+      const codeLines = [];
 
-      if (currentSection) {
-        currentSection.bullets.push(value);
-      } else {
-        currentRelease.bullets.push(value);
+      index += 1;
+      while (index < lines.length && !lines[index].trim().startsWith("```")) {
+        codeLines.push(lines[index]);
+        index += 1;
       }
+
+      appendCodeBlock(codeLines.join("\n"), language);
+      continue;
+    }
+
+    if (line.startsWith("- ") || line.startsWith("* ")) {
+      appendBullet(line.slice(2).trim());
       continue;
     }
 
@@ -142,14 +192,21 @@ function parseChangelog(markdown) {
       continue;
     }
 
-    if (currentSection) {
-      currentSection.paragraphs.push(renderInlineMarkdown(line));
-    } else {
-      currentRelease.paragraphs.push(renderInlineMarkdown(line));
-    }
+    appendParagraph(line);
   }
 
   return parsed;
+}
+
+function renderContentBlocks(content) {
+  return content
+    .map((item) => {
+      if (item.type === "paragraph") return `<p>${item.value}</p>`;
+      if (item.type === "bullets") return `<ul>${item.items.map((entry) => `<li>${entry}</li>`).join("")}</ul>`;
+      if (item.type === "code") return createCodeBlockMarkup(item.value, item.language);
+      return "";
+    })
+    .join("");
 }
 
 function renderChangelog(markdown, root, fallbackUrl) {
@@ -157,23 +214,14 @@ function renderChangelog(markdown, root, fallbackUrl) {
 
   const releasesMarkup = parsed.releases
     .map((release) => {
-      const introParagraphs = release.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("");
-      const introBullets = release.bullets.length
-        ? `<ul>${release.bullets.map((item) => `<li>${item}</li>`).join("")}</ul>`
-        : "";
+      const introContent = renderContentBlocks(release.content);
 
       const sectionsMarkup = release.sections
         .map((section) => {
-          const sectionParagraphs = section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("");
-          const sectionBullets = section.bullets.length
-            ? `<ul>${section.bullets.map((item) => `<li>${item}</li>`).join("")}</ul>`
-            : "";
-
           return `
             <section class="release-note-section">
               ${section.title ? `<h3>${section.title}</h3>` : ""}
-              ${sectionParagraphs}
-              ${sectionBullets}
+              ${renderContentBlocks(section.content)}
             </section>
           `;
         })
@@ -184,8 +232,7 @@ function renderChangelog(markdown, root, fallbackUrl) {
           <div class="release-note-date">${release.date}</div>
           <div class="release-note-body">
             ${release.title ? `<h2>${release.title}</h2>` : ""}
-            ${introParagraphs}
-            ${introBullets}
+            ${introContent}
             ${sectionsMarkup}
           </div>
         </article>
