@@ -14,26 +14,41 @@ function setupCarousel() {
   const carousel = document.querySelector("[data-carousel]");
   if (!carousel) return;
 
+  const stage = carousel.querySelector(".carousel-stage");
   const slides = [...carousel.querySelectorAll("[data-slide]")];
   const dots = [...carousel.querySelectorAll(".carousel-dot")];
 
-  if (slides.length < 2 || slides.length !== dots.length) return;
+  if (!stage || slides.length < 2 || slides.length !== dots.length) return;
 
   let activeIndex = 0;
   let incomingIndex = null;
+  let pointerId = null;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragDeltaX = 0;
+  let dragLocked = false;
+
+  const getWrappedIndex = (index) => {
+    if (index < 0) return slides.length - 1;
+    if (index >= slides.length) return 0;
+    return index;
+  };
 
   const setActive = (nextIndex) => {
-    if (nextIndex === activeIndex || incomingIndex !== null || nextIndex < 0 || nextIndex >= slides.length) return;
+    if (incomingIndex !== null) return;
+
+    const wrappedIndex = getWrappedIndex(nextIndex);
+    if (wrappedIndex === activeIndex) return;
 
     const current = slides[activeIndex];
-    const next = slides[nextIndex];
+    const next = slides[wrappedIndex];
 
-    incomingIndex = nextIndex;
+    incomingIndex = wrappedIndex;
     current.className = "carousel-figure is-exiting";
     next.className = "carousel-figure is-entering";
     next.setAttribute("aria-hidden", "false");
     dots.forEach((dot, index) => {
-      const isActive = index === nextIndex;
+      const isActive = index === wrappedIndex;
       dot.className = isActive ? "carousel-dot is-active" : "carousel-dot";
       dot.setAttribute("aria-pressed", String(isActive));
     });
@@ -42,13 +57,74 @@ function setupCarousel() {
       current.className = "carousel-figure";
       current.setAttribute("aria-hidden", "true");
       next.className = "carousel-figure is-active";
-      activeIndex = nextIndex;
+      activeIndex = wrappedIndex;
       incomingIndex = null;
     }, 320);
   };
 
+  const resetDrag = () => {
+    pointerId = null;
+    dragStartX = 0;
+    dragStartY = 0;
+    dragDeltaX = 0;
+    dragLocked = false;
+    stage.classList.remove("is-dragging");
+  };
+
+  const handleSwipeEnd = () => {
+    const threshold = Math.min(96, stage.clientWidth * 0.12);
+
+    if (Math.abs(dragDeltaX) >= threshold) {
+      setActive(activeIndex + (dragDeltaX < 0 ? 1 : -1));
+    }
+
+    resetDrag();
+  };
+
   dots.forEach((dot, index) => {
     dot.addEventListener("click", () => setActive(index));
+  });
+
+  stage.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary || incomingIndex !== null) return;
+
+    pointerId = event.pointerId;
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    dragDeltaX = 0;
+    dragLocked = false;
+    stage.classList.add("is-dragging");
+    stage.setPointerCapture(event.pointerId);
+  });
+
+  stage.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== pointerId || dragLocked) return;
+
+    const deltaX = event.clientX - dragStartX;
+    const deltaY = event.clientY - dragStartY;
+
+    if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) {
+      dragLocked = true;
+      resetDrag();
+      return;
+    }
+
+    dragDeltaX = deltaX;
+  });
+
+  stage.addEventListener("pointerup", (event) => {
+    if (event.pointerId !== pointerId) return;
+    handleSwipeEnd();
+  });
+
+  stage.addEventListener("pointercancel", (event) => {
+    if (event.pointerId !== pointerId) return;
+    resetDrag();
+  });
+
+  stage.addEventListener("lostpointercapture", () => {
+    if (pointerId === null) return;
+    resetDrag();
   });
 }
 

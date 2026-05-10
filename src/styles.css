@@ -178,10 +178,39 @@ img {
   position: relative;
   z-index: 2;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 24px;
   height: calc(100svh - 122px);
   padding: 84px 0 28px;
+}
+
+.hero-mobile-copy {
+  display: none;
+}
+
+.hero-mobile-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-mobile-brand img {
+  width: auto;
+  height: 24px;
+}
+
+.hero-mobile-tagline {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.hero-mobile-download {
+  display: none;
 }
 
 .carousel {
@@ -201,6 +230,14 @@ img {
   justify-content: center;
   width: min(74.025vw, 1066px);
   aspect-ratio: 2222 / 1504;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.carousel-stage.is-dragging {
+  cursor: grabbing;
 }
 
 .carousel-figure {
@@ -231,6 +268,8 @@ img {
   border-radius: 24px;
   background: transparent;
   filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.2));
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .carousel-dots {
@@ -734,7 +773,7 @@ img {
   .hero {
     height: auto;
     min-height: auto;
-    padding: 96px 0 18px;
+    padding: 104px 0 18px;
   }
 
   .carousel-stage {
@@ -779,16 +818,109 @@ img {
 }
 
 @media (max-width: 560px) {
-  .brand img {
+  body[data-page-kind="home"] .page-shell {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: visible;
+    padding: 18px 16px 22px;
+  }
+
+  body[data-page-kind="home"] .topbar {
+    display: none;
+  }
+
+  body[data-page-kind="home"] .brand img {
     height: 24px;
   }
 
-  .download-button {
-    width: 100%;
+  body[data-page-kind="home"] .hero {
+    flex: 1;
+    justify-content: center;
+    gap: 28px;
+    height: auto;
+    min-height: 0;
+    padding: 12px 0 0;
   }
 
-  .carousel-figure img {
+  body[data-page-kind="home"] .hero-mobile-copy {
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    width: 100%;
+    padding-top: 18px;
+  }
+
+  body[data-page-kind="home"] .hero-mobile-brand img {
+    height: 30px;
+  }
+
+  body[data-page-kind="home"] .hero-mobile-tagline {
+    max-width: 18ch;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  body[data-page-kind="home"] .hero-mobile-download {
+    display: inline-flex;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    width: fit-content;
+    justify-self: center;
+    margin-top: 2px;
+  }
+
+  body[data-page-kind="home"] .hero-mobile-download:hover,
+  body[data-page-kind="home"] .hero-mobile-download:focus-visible {
+    background: #3f3f46;
+  }
+
+  body[data-page-kind="home"] .carousel {
+    width: 100%;
+    padding-bottom: 0;
+    margin-top: 10px;
+  }
+
+  body[data-page-kind="home"] .carousel-stage {
+    width: min(100%, 520px);
+  }
+
+  body[data-page-kind="home"] .carousel-figure img {
     border-radius: 16px;
+    filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.14));
+  }
+
+  body[data-page-kind="home"] .carousel-dots {
+    margin-top: 12px;
+  }
+
+  body[data-page-kind="home"] .carousel-dot {
+    width: 6px;
+    height: 6px;
+    background: rgba(115, 115, 115, 0.42);
+  }
+
+  body[data-page-kind="home"] .carousel-dot.is-active {
+    width: 18px;
+    background: rgba(63, 63, 70, 0.72);
+  }
+
+  body[data-page-kind="home"] .footer-links {
+    position: static;
+    justify-content: center;
+    gap: 18px;
+    margin-top: auto;
+    padding-top: 20px;
+    padding-bottom: 8px;
+    color: rgba(131, 125, 118, 0.84);
+    font-size: 0.82rem;
+    font-weight: 500;
+    flex-wrap: wrap;
   }
 
   .lophos-changelog-intro h1,
