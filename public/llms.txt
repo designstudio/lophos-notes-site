@@ -10,9 +10,9 @@ beta access, and provides terms and changelog pages.
 
 ## Key URLs
 
-- Home: http://localhost:5173/
-- Changelog: http://localhost:5173/changelog/
-- Terms and policies: http://localhost:5173/terms/
+- Home: https://notes.lophos.space/
+- Changelog: https://notes.lophos.space/changelog/
+- Terms and policies: https://notes.lophos.space/terms/
 
 ## Contact
 

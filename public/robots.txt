@@ -22,4 +22,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: http://localhost:5173/sitemap.xml
+Sitemap: https://notes.lophos.space/sitemap.xml
